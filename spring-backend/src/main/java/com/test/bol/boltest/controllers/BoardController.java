@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +33,9 @@ public class BoardController {
     BoardService service;
 
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private SimpMessagingTemplate template;
 
     public BoardController(BoardService service, ModelMapper modelMapper) {
         this.service = service;
@@ -92,10 +98,14 @@ public class BoardController {
      * @param dto move
      * @return Board status
      */
+    //@MessageMapping("/move")
+    //@SendTo("/topic/moves")
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> makeMove(@RequestBody MoveDto dto){
         try {
-            return new ResponseEntity<>(convertBoardDto(service.makeMove(convertMoveEntity(dto))),HttpStatus.OK);
+            BoardDto board = convertBoardDto(service.makeMove(convertMoveEntity(dto)));
+            this.template.convertAndSend("/topic/moves", board);
+            return new ResponseEntity<>(board,HttpStatus.OK);
         } catch (BoardNotFoundException e) {
             return new ResponseEntity<>("Board not found",HttpStatus.NOT_FOUND);
         } catch (IllegalMoveException e) {
