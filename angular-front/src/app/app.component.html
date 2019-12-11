@@ -1,0 +1,20 @@
+ <div class="row">
+    <a>{{title}}</a>
+ </div>
+ 
+ <mat-grid-list cols="8" rowHeight="150px" >
+    <mat-grid-tile
+        *ngFor="let tile of tiles"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows"
+        [style.background]="tile.color"
+        (click)="move(tile)">
+      {{tile.text}}
+    </mat-grid-tile>
+  </mat-grid-list>
+
+ 
+  <div class="row">
+    <button mat-button (click)=createNewGameAddDeleteOld()>Create new game</button>
+    <a>{{board.playerTurn}}</a>
+ </div>
