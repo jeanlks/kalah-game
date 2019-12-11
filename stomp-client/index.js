@@ -1,6 +1,6 @@
 var Stomp = require('stompjs')
 var SockJS = require('sockjs-client')
-var url = 'http://localhost:8080/moves';
+var url = 'http://localhost:8080/ws';
 console.log('connecting to '+url);
 
 var sock= new SockJS(url);
