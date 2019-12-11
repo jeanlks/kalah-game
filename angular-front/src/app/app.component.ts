@@ -7,6 +7,7 @@ import { Move } from './shared/move';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-root',
@@ -51,6 +52,7 @@ export class AppComponent implements OnInit {
       this.refreshBoard(boardUpdated);
     });
     this.connect();
+    console.log(this.getSessionId());
   }
 
   move(tile: Tile) {
@@ -117,7 +119,7 @@ export class AppComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     const _this = this;
     _this.stompClient.connect({}, function (frame) {
-      _this.stompClient.subscribe(_this.topic, function(event) {
+      _this.stompClient.subscribe(_this.topic, function (event) {
         _this.handleMessage(event.body);
       });
       //_this.stompClient.reconnect_delay = 2000;
@@ -138,7 +140,17 @@ export class AppComponent implements OnInit {
   errorCallBack(error) {
     console.log('errorCallBack -> ' + error);
     setTimeout(() => {
-        this.connect();
+      this.connect();
     }, 5000);
-}
+  }
+
+  getSessionId(forceCreateNew: boolean = false) {
+    let gameId = localStorage.getItem('game_id');
+    if (!forceCreateNew && gameId) {
+      return gameId;
+    }
+    gameId = uuid.v4();
+    localStorage.setItem('game_id', gameId);
+    return gameId;
+  }
 }
