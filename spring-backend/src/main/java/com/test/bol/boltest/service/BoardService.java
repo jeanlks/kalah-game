@@ -33,7 +33,7 @@ public interface BoardService {
      * @param boardName boardName
      * @return board
      */
-    Board getExistingBoardOrNew(String boardName) throws BoardEmptyException;
+    Board getExistingBoardOrNew(Board board) throws BoardEmptyException;
 
     /**
      * Make a move inside the board game.
@@ -53,5 +53,5 @@ public interface BoardService {
      * @param boardName board name
      * @return new default board
      */
-    Board getNewBoardDefault(String boardName);
+    void setNewBoardDefault(Board board);
 }

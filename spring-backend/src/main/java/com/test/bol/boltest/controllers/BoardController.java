@@ -7,6 +7,7 @@ import com.test.bol.boltest.model.Board;
 import com.test.bol.boltest.model.BoardDto;
 import com.test.bol.boltest.model.Move;
 import com.test.bol.boltest.model.MoveDto;
+import com.test.bol.boltest.model.Player;
 import com.test.bol.boltest.repository.BoardRepository;
 import com.test.bol.boltest.service.BoardService;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,10 +61,11 @@ public class BoardController {
      * @param boardName board name
      * @return created board
      */
-    @PostMapping(value = "/{boardName}")
-    public ResponseEntity<?> createBoard(@PathVariable("boardName") String boardName){
+    @PostMapping
+    public ResponseEntity<?> createBoard(@RequestBody BoardDto dto){
         try {
-            return new ResponseEntity<>(convertBoardDto(service.getExistingBoardOrNew(boardName)), HttpStatus.OK);
+            Board board= convertBoardToEntity(dto);
+            return new ResponseEntity<>(convertBoardDto(service.getExistingBoardOrNew(board)), HttpStatus.OK);
         } catch (BoardEmptyException e){
             return new ResponseEntity<>("An internal error ocurred",HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -119,7 +122,24 @@ public class BoardController {
         BoardDto dto = modelMapper.map(board, BoardDto.class);
         dto.setBoardName(board.getName());
         dto.setBoard(board.getBoardMap());
+        if(board.getPlayers().get(0) != null){
+            dto.setPlayer1(board.getPlayers().get(0));
+        }
+        if(board.getPlayers().get(1) != null){
+            dto.setPlayer2(board.getPlayers().get(1));
+        }
         return dto;
+    }
+
+    Board convertBoardToEntity(BoardDto dto) { 
+        Board board = new Board();
+        List<Player> players = new ArrayList<>();
+        players.add(dto.getPlayer1());
+        players.add(dto.getPlayer2());
+        board.setPlayers(players);
+        board.setBoardId(dto.getBoardId());
+        board.setName(dto.getBoardName());
+        return board;
     }
 
     Move convertMoveEntity(MoveDto moveDto) {

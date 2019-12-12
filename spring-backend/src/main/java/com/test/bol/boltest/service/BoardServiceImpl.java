@@ -7,6 +7,9 @@ import com.test.bol.boltest.model.*;
 import com.test.bol.boltest.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -19,6 +22,7 @@ import static com.test.bol.boltest.model.PlayerTurn.PLAYER2;
  * @author Jean Carvalho
  */
 @Service
+@Slf4j
 public class BoardServiceImpl implements BoardService {
 
     public static final String ILLEGAL_MOVE_MESSAGE = "Illegal move for player.";
@@ -39,10 +43,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board findBoard(String boardName) throws BoardNotFoundException {
-        Board boardFound = repository.findFirstByName(boardName);
+    public Board findBoard(String boardId) throws BoardNotFoundException {
+        Board boardFound = repository.findFirstByBoardId(boardId);
+        log.info("Searching for board with id: ", boardId);
         if(boardFound == null) {
-            throw new BoardNotFoundException("Board not found for name: "+ boardName);
+            log.info("Board not found");
+            throw new BoardNotFoundException("Board not found for id: "+ boardId);
         }
         return boardFound;
     }
@@ -192,25 +198,23 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public Board getExistingBoardOrNew(String boardName) throws BoardEmptyException{
-        Board board = repository.findFirstByName(boardName);
-        if(board!=null){
+    public Board getExistingBoardOrNew(Board board) throws BoardEmptyException{
+        Board boardFromDatabase = repository.findFirstByBoardId(board.getBoardId());
+        if(boardFromDatabase!=null){
+            board.setBoardMap(boardFromDatabase.getBoardMap());
             return board;
         } else {
-            Board newBoard = getNewBoardDefault(boardName);
-            newBoard.setBoardMap(newBoard.getBoard().getMap());
-            return repository.save(newBoard);
+            setNewBoardDefault(board);
+            board.setBoardMap(board.getBoard().getMap());
+            return repository.save(board);
         }
     }
 
     @Override
-    public Board getNewBoardDefault(String boardName) {
-        Board board = new Board();
-        board.setName(boardName);
+    public void setNewBoardDefault(Board board) {
         board.setBoard(getDefaultBoard());
         int index_random_player = new Random().nextInt(2);
         board.setPlayerTurn(Arrays.asList(PLAYER1, PLAYER2).get(index_random_player));
-        return board;
     }
 
     private CircularLinkedList getDefaultBoard() {

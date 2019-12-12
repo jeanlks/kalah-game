@@ -16,7 +16,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class BoardDto {
     private String boardName;
+    private String boardId;
     private Map<String, Integer> board;
     private PlayerTurn playerTurn;
+    private Player player1;
+    private Player player2;
     private Boolean gameFinished;
 }

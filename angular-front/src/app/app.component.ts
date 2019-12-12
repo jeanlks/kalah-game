@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
       this.refreshBoard(boardUpdated);
     });
     this.connect();
-    console.log(this.getSessionId());
+    console.log(this.getIdLocalStorage('game_id'));
   }
 
   move(tile: Tile) {
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit {
   }
 
   connect() {
-    console.log("Initialize WebSocket Connection");
+    console.log('Initialize WebSocket Connection');
     let ws = new SockJS(this.webSocketEndPoint);
     this.stompClient = Stomp.over(ws);
     const _this = this;
@@ -144,13 +144,15 @@ export class AppComponent implements OnInit {
     }, 5000);
   }
 
-  getSessionId(forceCreateNew: boolean = false) {
-    let gameId = localStorage.getItem('game_id');
-    if (!forceCreateNew && gameId) {
-      return gameId;
+  getIdLocalStorage(field, forceCreateNew: boolean = false, ) {
+    let id = localStorage.getItem(field);
+    if (!forceCreateNew && id) {
+      return id;
     }
-    gameId = uuid.v4();
-    localStorage.setItem('game_id', gameId);
-    return gameId;
+    id = uuid.v4();
+    localStorage.setItem(field, id);
+    return id;
   }
+
+  
 }

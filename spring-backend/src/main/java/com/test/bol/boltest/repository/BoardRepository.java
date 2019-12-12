@@ -16,6 +16,6 @@ public interface BoardRepository extends CrudRepository<Board, Long>{
      * @param boardName board name to search
      * @return board
      */
-    Board findFirstByName(String boardName);
+    Board findFirstByBoardId(String boardName);
 
 }
