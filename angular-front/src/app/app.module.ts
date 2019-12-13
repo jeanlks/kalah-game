@@ -1,4 +1,4 @@
-import { AppModalComponent } from './app-modal';
+import { AppModalComponent } from './board/app-modal';
 import { AppService } from './app.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -10,11 +10,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { HomeComponent } from './home/home.component';
+import { BoardComponent } from './board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AppModalComponent
+    AppModalComponent,
+    HomeComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule,

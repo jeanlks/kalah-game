@@ -33,7 +33,7 @@ public class Board {
     private Map<String, Integer> boardMap;
     private PlayerTurn playerTurn;
 
-    @OneToMany(mappedBy = "playerId")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Player> players;
 
     private Boolean gameFinished;
