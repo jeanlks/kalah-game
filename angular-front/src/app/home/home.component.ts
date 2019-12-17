@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -6,10 +8,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
-  constructor() { }
+  form = this.fb.group({
+      username: ['', Validators.required]
+  });
+  constructor(private router: Router,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
   }
 
+
+  submit() {
+    this.router.navigate(['/rooms']);
+  }
 }

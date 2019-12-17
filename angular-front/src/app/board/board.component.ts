@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import * as uuid from 'uuid';
-import { AppService } from '../app.service';
+import { GameService } from '../shared/game.service';
 import { Tile } from '../shared/tile';
 import { Move } from '../shared/move';
 import { Board } from '../shared/board';
@@ -19,15 +19,15 @@ export class BoardComponent implements OnInit {
   title = 'Bol.com Mancala Game';
   board: Board = new Board();
   boardMap: Map<string, number> = new Map<string, number>();
-  boardService: AppService;
+  gameService: GameService;
 
   dialog: MatDialog;
   webSocketEndPoint = 'http://localhost:8080/ws';
   topic = '/topic/moves';
   stompClient = null;
 
-  constructor(boardService: AppService, dialog: MatDialog) {
-    this.boardService = boardService;
+  constructor(gameService: GameService, dialog: MatDialog) {
+    this.gameService = gameService;
     this.dialog = dialog;
   }
 
@@ -51,7 +51,7 @@ export class BoardComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.boardService.createBoard('test').subscribe(boardUpdated => {
+    this.gameService.createBoard('test').subscribe(boardUpdated => {
       this.refreshBoard(boardUpdated);
     });
     this.connect();
@@ -61,7 +61,7 @@ export class BoardComponent implements OnInit {
   move(tile: Tile) {
     console.log(tile);
     const move: Move = new Move(tile.name, this.board.boardName, this.getIdLocalStorage('user_id'));
-    this.boardService.makeMove(move).subscribe((boardUpdated) => {
+    this.gameService.makeMove(move).subscribe((boardUpdated) => {
       this.refreshBoard(boardUpdated);
     });
   }
@@ -78,8 +78,8 @@ export class BoardComponent implements OnInit {
   }
 
   createNewGameAddDeleteOld() {
-    this.boardService.clearAllBoards().subscribe((c) => {
-      this.boardService.createBoard('test').subscribe(boardUpdated => {
+    this.gameService.clearAllBoards().subscribe((c) => {
+      this.gameService.createBoard('test').subscribe(boardUpdated => {
         this.refreshBoard(boardUpdated);
       });
     });

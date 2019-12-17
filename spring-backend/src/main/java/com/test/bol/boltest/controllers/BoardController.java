@@ -122,10 +122,10 @@ public class BoardController {
         BoardDto dto = modelMapper.map(board, BoardDto.class);
         dto.setBoardName(board.getName());
         dto.setBoard(board.getBoardMap());
-        if(board.getPlayers().get(0) != null){
+        if(board.getPlayers().size() == 1 ){
             dto.setPlayer1(board.getPlayers().get(0));
         }
-        if(board.getPlayers().get(1) != null){
+        if(board.getPlayers().size() == 2){
             dto.setPlayer2(board.getPlayers().get(1));
         }
         return dto;

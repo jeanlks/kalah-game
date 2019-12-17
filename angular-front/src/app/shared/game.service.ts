@@ -1,14 +1,14 @@
-import { environment } from './../environments/environment.prod';
+import { environment } from '../../environments/environment.prod';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { Move } from './shared/move';
+import { Move } from './move';
 const url = environment.url + '/boards';
 @Injectable({
   providedIn: 'root'
 })
-export class AppService {
+export class GameService {
 
   constructor(private http: HttpClient) {
    }
