@@ -5,7 +5,8 @@ import { NgModule } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { MatInputModule, MatButtonModule, MatSelectModule, MatIconModule,
-         MatDialog, MatDialogModule, MatProgressSpinnerModule, MatMenuModule, MatTableModule, MatToolbarModule 
+         MatDialog, MatDialogModule, MatProgressSpinnerModule, MatMenuModule,
+          MatTableModule, MatToolbarModule, MatPaginatorModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -39,7 +40,9 @@ import { RoomComponent } from './room/room.component';
     HttpClientModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   exports: [
      CommonModule,
