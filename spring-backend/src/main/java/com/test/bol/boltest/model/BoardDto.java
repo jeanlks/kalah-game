@@ -17,7 +17,7 @@ import java.util.Map;
 public class BoardDto {
     private String boardName;
     private String boardId;
-    private Map<String, Integer> board;
+    private Map<BoardTile, Integer> board;
     private PlayerTurn playerTurn;
     private Player player1;
     private Player player2;

@@ -10,7 +10,7 @@ public class CircularLinkedList {
     public Node head=null;
     public Node tail=null;
 
-    public void addNodeAtStart(int data, String position){
+    public void addNodeAtStart(int data, BoardTile position){
         Node n = new Node(data, position);
         if(size==0){
             head = n;
@@ -25,7 +25,7 @@ public class CircularLinkedList {
         size++;
     }
 
-    public void addNodeAtEnd(int data, String positionName){
+    public void addNodeAtEnd(int data, BoardTile positionName){
         if(size==0){
             addNodeAtStart(data, positionName);
         }else{
@@ -59,8 +59,8 @@ public class CircularLinkedList {
         return n.number;
     }
 
-    public Map<String, Integer> getMap() throws BoardEmptyException {
-        Map<String, Integer> board = new HashMap<>();
+    public Map<BoardTile, Integer> getMap() throws BoardEmptyException {
+        Map<BoardTile, Integer> board = new HashMap<>();
         Node temp = head;
         if(size<=0){
             throw new BoardEmptyException("The board was not initialized.");

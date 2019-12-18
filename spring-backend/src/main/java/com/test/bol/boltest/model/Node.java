@@ -11,10 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Node {
     public int number;
-    public String position;
+    public BoardTile position;
     public Node next;
 
-    public Node(int number, String position){
+    public Node(int number, BoardTile position){
         this.number = number;
         this.position = position;
     }

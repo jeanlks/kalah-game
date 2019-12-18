@@ -27,16 +27,23 @@ import static com.test.bol.boltest.model.PlayerTurn.PLAYER2;
 public class BoardServiceImpl implements BoardService {
 
     public static final String ILLEGAL_MOVE_MESSAGE = "Illegal move for player.";
-    public static final String P1_BIGPIT = "bigPit1";
-    public static final String P2_BIGPIT = "bigPit2";
+
     BoardRepository repository;
+    BoardFactory boardFactory;
 
     public BoardServiceImpl(BoardRepository repository) {
         this.repository = repository;
+        this.boardFactory = new BoardFactory();
     }
 
-    public String player1Positions[] = new String[] { "p11", "p12", "p13", "p14", "p15", "p16" };
-    public String player2Positions[] = new String[] { "p21", "p22", "p23", "p24", "p25", "p26" };
+    public BoardTile player1Positions[] = new BoardTile[] { 
+        BoardTile.P11, BoardTile.P12, BoardTile.P13,
+        BoardTile.P14, BoardTile.P15, BoardTile.P16
+    };
+    public BoardTile player2Positions[] = new BoardTile[] { 
+        BoardTile.P21, BoardTile.P22, BoardTile.P23,
+        BoardTile.P24, BoardTile.P25, BoardTile.P26 
+    };
 
     @GetMapping
     public List<Board> getAllBoards() {
@@ -73,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
     private void shouldCapture(Board board, Node lastPosition) {
         if (isPieceOnHisSide(board.getPlayerTurn(), lastPosition)
                 && (lastPosition.getNumber() == 0 || lastPosition.getNumber() == 1)) {
-            String oppositePosition = getOppositePosition(lastPosition.getPosition());
+            BoardTile oppositePosition = getOppositePosition(lastPosition.getPosition());
             if (board.getBoardMap().get(oppositePosition) != 0) {
                 int sum = board.getBoardMap().get(oppositePosition)
                         + board.getBoardMap().get(lastPosition.getPosition());
@@ -86,42 +93,44 @@ public class BoardServiceImpl implements BoardService {
 
     private void updatePlayerBigPit(int sum, Board board) {
         if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)) {
-            board.getBoardMap().replace(P1_BIGPIT, board.getBoardMap().get(P1_BIGPIT) + sum);
+            board.getBoardMap()
+                 .replace(BoardTile.P1_BIG_PIT, board.getBoardMap().get(BoardTile.P1_BIG_PIT) + sum);
         } else {
-            board.getBoardMap().replace(P2_BIGPIT, board.getBoardMap().get(P2_BIGPIT) + sum);
+            board.getBoardMap()
+                 .replace(BoardTile.P2_BIG_PIT, board.getBoardMap().get(BoardTile.P2_BIG_PIT) + sum);
         }
     }
 
-    private String getOppositePosition(String position) {
-        Map<String, String> opposites = getAllOppositePositions();
+    private BoardTile getOppositePosition(BoardTile position) {
+        Map<BoardTile, BoardTile> opposites = getAllOppositePositions();
         return opposites.get(position);
     }
 
-    private Map<String, String> getAllOppositePositions() {
-        Map<String, String> opps = new HashMap<>();
-        opps.put("p11", "p26");
-        opps.put("p12", "p25");
-        opps.put("p13", "p24");
-        opps.put("p14", "p23");
-        opps.put("p15", "p22");
-        opps.put("p16", "p21");
+    private Map<BoardTile, BoardTile> getAllOppositePositions() {
+        Map<BoardTile, BoardTile> opps = new HashMap<>();
+        opps.put(BoardTile.P11, BoardTile.P26);
+        opps.put(BoardTile.P12, BoardTile.P25);
+        opps.put(BoardTile.P13, BoardTile.P24);
+        opps.put(BoardTile.P14, BoardTile.P23);
+        opps.put(BoardTile.P15, BoardTile.P22);
+        opps.put(BoardTile.P16, BoardTile.P21);
 
-        opps.put("p26", "p11");
-        opps.put("p25", "p12");
-        opps.put("p24", "p13");
-        opps.put("p23", "p14");
-        opps.put("p22", "p15");
-        opps.put("p21", "p16");
+        opps.put(BoardTile.P26, BoardTile.P11);
+        opps.put(BoardTile.P25, BoardTile.P12);
+        opps.put(BoardTile.P24, BoardTile.P13);
+        opps.put(BoardTile.P23, BoardTile.P14);
+        opps.put(BoardTile.P22, BoardTile.P15);
+        opps.put(BoardTile.P21, BoardTile.P16);
         return opps;
     }
 
     private boolean isPieceOnHisSide(PlayerTurn playerTurn, Node lastPosition) {
         if (playerTurn.equals(PlayerTurn.PLAYER1)) {
-            if (Arrays.stream(player1Positions).anyMatch(lastPosition.getPosition()::equalsIgnoreCase)) {
+            if (Arrays.stream(player1Positions).anyMatch(lastPosition.getPosition():: equals)) {
                 return true;
             }
         } else {
-            if (Arrays.stream(player2Positions).anyMatch(lastPosition.getPosition()::equalsIgnoreCase)) {
+            if (Arrays.stream(player2Positions).anyMatch(lastPosition.getPosition()::equals)) {
                 return true;
             }
         }
@@ -136,8 +145,8 @@ public class BoardServiceImpl implements BoardService {
         return board;
     }
 
-    private boolean checkPositionsEmpty(String[] playerPositions, Map<String, Integer> boardMap) {
-        for (String playerPosition : playerPositions) {
+    private boolean checkPositionsEmpty(BoardTile[] playerPositions, Map<BoardTile, Integer> boardMap) {
+        for (BoardTile playerPosition : playerPositions) {
             if (boardMap.get(playerPosition) != 0) {
                 return false;
             }
@@ -145,36 +154,36 @@ public class BoardServiceImpl implements BoardService {
         return true;
     }
 
-    private CircularLinkedList getCircularLinkedListFromMap(Map<String, Integer> map) {
+    private CircularLinkedList getCircularLinkedListFromMap(Map<BoardTile, Integer> map) {
         CircularLinkedList board = new CircularLinkedList();
-        board.addNodeAtEnd(map.get("p11"), "p11");
-        board.addNodeAtEnd(map.get("p12"), "p12");
-        board.addNodeAtEnd(map.get("p13"), "p13");
-        board.addNodeAtEnd(map.get("p14"), "p14");
-        board.addNodeAtEnd(map.get("p15"), "p15");
-        board.addNodeAtEnd(map.get("p16"), "p16");
-        board.addNodeAtEnd(map.get(P1_BIGPIT), P1_BIGPIT);
-        board.addNodeAtEnd(map.get("p21"), "p21");
-        board.addNodeAtEnd(map.get("p22"), "p22");
-        board.addNodeAtEnd(map.get("p23"), "p23");
-        board.addNodeAtEnd(map.get("p24"), "p24");
-        board.addNodeAtEnd(map.get("p25"), "p25");
-        board.addNodeAtEnd(map.get("p26"), "p26");
-        board.addNodeAtEnd(map.get(P2_BIGPIT), P2_BIGPIT);
+        board.addNodeAtEnd(map.get(BoardTile.P11), BoardTile.P11);
+        board.addNodeAtEnd(map.get(BoardTile.P12), BoardTile.P12);
+        board.addNodeAtEnd(map.get(BoardTile.P13), BoardTile.P13);
+        board.addNodeAtEnd(map.get(BoardTile.P14), BoardTile.P14);
+        board.addNodeAtEnd(map.get(BoardTile.P15), BoardTile.P15);
+        board.addNodeAtEnd(map.get(BoardTile.P16), BoardTile.P16);
+        board.addNodeAtEnd(map.get(BoardTile.P1_BIG_PIT), BoardTile.P1_BIG_PIT);
+        board.addNodeAtEnd(map.get(BoardTile.P21), BoardTile.P21);
+        board.addNodeAtEnd(map.get(BoardTile.P22), BoardTile.P22);
+        board.addNodeAtEnd(map.get(BoardTile.P23), BoardTile.P23);
+        board.addNodeAtEnd(map.get(BoardTile.P24), BoardTile.P24);
+        board.addNodeAtEnd(map.get(BoardTile.P25), BoardTile.P25);
+        board.addNodeAtEnd(map.get(BoardTile.P26), BoardTile.P26);
+        board.addNodeAtEnd(map.get(BoardTile.P2_BIG_PIT), BoardTile.P2_BIG_PIT);
         return board;
     }
 
     private void checkIllegalMove(Move move, Board board) throws IllegalMoveException, BoardEmptyException {
         if (Arrays.stream(ArrayUtils.addAll(player1Positions, player2Positions))
-                .noneMatch(move.getPosition()::equalsIgnoreCase)) {
+                .noneMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getBoard().getMap().get(move.getPosition()) == 0) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)
-                && Arrays.stream(player2Positions).anyMatch(move.getPosition()::equalsIgnoreCase)) {
+                && Arrays.stream(player2Positions).anyMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER2)
-                && Arrays.stream(player1Positions).anyMatch(move.getPosition()::equalsIgnoreCase)) {
+                && Arrays.stream(player1Positions).anyMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         }
     }
@@ -185,8 +194,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void checkLastPositionAndChangePlayer(Node lastPosition, Board board) {
-        if (!lastPosition.getPosition().equalsIgnoreCase(P1_BIGPIT)
-                && !lastPosition.getPosition().equalsIgnoreCase(P2_BIGPIT)) {
+        if (!(lastPosition.getPosition() == BoardTile.P1_BIG_PIT)
+                && !(lastPosition.getPosition() == BoardTile.P2_BIG_PIT)) {
             changePlayerTurn(board);
         }
     }
@@ -206,9 +215,12 @@ public class BoardServiceImpl implements BoardService {
             board.setBoardMap(boardFromDatabase.getBoardMap());
             return board;
         } else {
-            setNewBoardDefault(board);
-            board.setBoardMap(board.getBoard().getMap());
-            return repository.save(board);
+            Board defaultBoard = boardFactory.getBoard();
+            defaultBoard.setBoardId(board.getBoardId());
+            defaultBoard.setName(board.getName());
+            defaultBoard.setPlayers(board.getPlayers());
+            defaultBoard.setBoardMap(defaultBoard.getBoard().getMap());
+            return repository.save(defaultBoard);
         }
     }
 
@@ -228,20 +240,20 @@ public class BoardServiceImpl implements BoardService {
 
     private CircularLinkedList getDefaultBoard() {
         CircularLinkedList board = new CircularLinkedList();
-        board.addNodeAtEnd(6, "p11");
-        board.addNodeAtEnd(6, "p12");
-        board.addNodeAtEnd(6, "p13");
-        board.addNodeAtEnd(6, "p14");
-        board.addNodeAtEnd(6, "p15");
-        board.addNodeAtEnd(6, "p16");
-        board.addNodeAtEnd(0, P1_BIGPIT);
-        board.addNodeAtEnd(6, "p21");
-        board.addNodeAtEnd(6, "p22");
-        board.addNodeAtEnd(6, "p23");
-        board.addNodeAtEnd(6, "p24");
-        board.addNodeAtEnd(6, "p25");
-        board.addNodeAtEnd(6, "p26");
-        board.addNodeAtEnd(0, P2_BIGPIT);
+        board.addNodeAtEnd(6, BoardTile.P11);
+        board.addNodeAtEnd(6, BoardTile.P12);
+        board.addNodeAtEnd(6, BoardTile.P13);
+        board.addNodeAtEnd(6, BoardTile.P14);
+        board.addNodeAtEnd(6, BoardTile.P15);
+        board.addNodeAtEnd(6, BoardTile.P16);
+        board.addNodeAtEnd(0, BoardTile.P1_BIG_PIT);
+        board.addNodeAtEnd(6, BoardTile.P21);
+        board.addNodeAtEnd(6, BoardTile.P22);
+        board.addNodeAtEnd(6, BoardTile.P23);
+        board.addNodeAtEnd(6, BoardTile.P24);
+        board.addNodeAtEnd(6, BoardTile.P25);
+        board.addNodeAtEnd(6, BoardTile.P26);
+        board.addNodeAtEnd(0, BoardTile.P2_BIG_PIT);
         return board;
     }
 
@@ -249,7 +261,7 @@ public class BoardServiceImpl implements BoardService {
         Node temp = boardTable.head;
         do {
             temp = temp.next;
-        } while (!temp.getPosition().equalsIgnoreCase(position));
+        } while (!temp.getPosition().equals(position));
 
         int number_moves = temp.getNumber();
         temp.setNumber(0);
@@ -265,10 +277,10 @@ public class BoardServiceImpl implements BoardService {
         return temp;
     }
 
-    private boolean shouldSkipMancala(String position, PlayerTurn playerTurn) {
-        if (position.equalsIgnoreCase(P1_BIGPIT) && playerTurn.equals(PlayerTurn.PLAYER2)) {
+    private boolean shouldSkipMancala(BoardTile position, PlayerTurn playerTurn) {
+        if (position.equals(BoardTile.P1_BIG_PIT) && playerTurn.equals(PlayerTurn.PLAYER2)) {
             return true;
-        } else if (position.equalsIgnoreCase(P2_BIGPIT) && playerTurn.equals(PlayerTurn.PLAYER1)) {
+        } else if (position.equals(BoardTile.P2_BIG_PIT) && playerTurn.equals(PlayerTurn.PLAYER1)) {
             return true;
         }
 

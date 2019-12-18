@@ -28,7 +28,7 @@ public class Board {
             joinColumns = {@JoinColumn(name = "board_id", referencedColumnName = "boardId")})
     @MapKeyColumn(name = "board_position")
     @Column(name = "qnt")
-    private Map<String, Integer> boardMap;
+    private Map<BoardTile, Integer> boardMap;
     private PlayerTurn playerTurn;
 
     @OneToMany(cascade = CascadeType.ALL)
