@@ -1,3 +1,5 @@
+import { Player } from './player';
+
 export class Board {
     boardName: string;
     boardId: string;
@@ -5,6 +7,8 @@ export class Board {
     playerTurn: string;
     gameFinished: boolean;
     winnerText: string;
+    player1: Player;
+    player2: Player;
     constructor() {
     }
 }

@@ -8,6 +8,8 @@ import { Tile } from '../shared/tile';
 import { Move } from '../shared/move';
 import { Board } from '../shared/board';
 import { AppModalComponent } from './app-modal';
+import { ActivatedRoute } from '@angular/router';
+import { Player } from '../shared/player';
 
 @Component({
   selector: 'app-board',
@@ -26,36 +28,32 @@ export class BoardComponent implements OnInit {
   topic = '/topic/moves';
   stompClient = null;
 
-  constructor(gameService: GameService, dialog: MatDialog) {
+  constructor(gameService: GameService, dialog: MatDialog,  private route: ActivatedRoute) {
     this.gameService = gameService;
     this.dialog = dialog;
   }
 
-
-
-  tiles: Tile[] = [
-    { text: '0', cols: 1, rows: 2, color: 'lightgreen', name: 'bigPit2' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p26' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p25' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p24' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p23' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p22' },
-    { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p21' },
-    { text: '0', cols: 1, rows: 2, color: 'lightblue', name: 'bigPit1' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p11' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p12' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p13' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p14' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p15' },
-    { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p16' },
-  ];
+  tiles: Tile[] = [];
+  gameId = '';
 
   ngOnInit() {
-    this.gameService.createBoard('test').subscribe(boardUpdated => {
+    this.gameId = this.route.snapshot.paramMap.get('id');
+    const board = this.getBoardForJoin(this.gameId);
+    this.gameService.joinBoard(board).subscribe(boardUpdated => {
       this.refreshBoard(boardUpdated);
     });
+
     this.connect();
-    console.log(this.getIdLocalStorage('game_id'));
+    this.tiles = this.gameService.getTiles();
+
+  }
+
+  getBoardForJoin(boardId: string): Board {
+    const board: Board = new Board();
+    board.boardId = boardId;
+    const userName = localStorage.getItem('game_username');
+    board.player2 = new Player(userName, this.getIdLocalStorage('user_id'));
+    return board;
   }
 
   move(tile: Tile) {
@@ -133,7 +131,6 @@ export class BoardComponent implements OnInit {
     if (this.stompClient !== null) {
       this.stompClient.disconnect();
     }
-    console.log('Disconnected');
   }
 
   handleMessage(message) {
@@ -147,7 +144,7 @@ export class BoardComponent implements OnInit {
     }, 5000);
   }
 
-  getIdLocalStorage(field, forceCreateNew: boolean = false, ) {
+  getIdLocalStorage(field, forceCreateNew: boolean = false) {
     let id = localStorage.getItem(field);
     if (!forceCreateNew && id) {
       return id;
@@ -156,7 +153,5 @@ export class BoardComponent implements OnInit {
     localStorage.setItem(field, id);
     return id;
   }
-
-  
 
 }

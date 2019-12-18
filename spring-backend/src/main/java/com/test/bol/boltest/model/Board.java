@@ -19,15 +19,13 @@ import com.test.bol.boltest.model.Player;
 @Entity
 public class Board {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
     private String boardId;
     private String name;
     @Transient
     private CircularLinkedList board;
     @ElementCollection
     @CollectionTable(name = "board_item_mapping",
-            joinColumns = {@JoinColumn(name = "board_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "board_id", referencedColumnName = "boardId")})
     @MapKeyColumn(name = "board_position")
     @Column(name = "qnt")
     private Map<String, Integer> boardMap;

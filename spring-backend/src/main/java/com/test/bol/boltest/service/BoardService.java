@@ -35,6 +35,13 @@ public interface BoardService {
      */
     Board getExistingBoardOrNew(Board board) throws BoardEmptyException;
 
+        /**
+     * Join player to existent board
+     * @param board board
+     * @return board
+     */
+    Board joinBoard(Board board);
+
     /**
      * Make a move inside the board game.
      * @param move move object with board name and position of the move

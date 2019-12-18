@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
 
 
   submit() {
+    localStorage.setItem('game_username', this.form.value.username);
     this.router.navigate(['/rooms']);
   }
 }

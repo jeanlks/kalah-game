@@ -71,6 +71,17 @@ public class BoardController {
         }
     }
 
+        /**
+     * Should create new board for name
+     * @param boardName board name
+     * @return created board
+     */
+    @PostMapping(value = "/join")
+    public ResponseEntity<?> joinBoard(@RequestBody BoardDto dto){
+        Board board= convertBoardToEntity(dto);
+        return new ResponseEntity<>(convertBoardDto(service.joinBoard(board)), HttpStatus.OK); 
+    }
+
     /**
      * Delete all boards
      * @return status for the deletion.
@@ -122,11 +133,12 @@ public class BoardController {
         BoardDto dto = modelMapper.map(board, BoardDto.class);
         dto.setBoardName(board.getName());
         dto.setBoard(board.getBoardMap());
-        if(board.getPlayers().size() == 1 ){
-            dto.setPlayer1(board.getPlayers().get(0));
-        }
+
         if(board.getPlayers().size() == 2){
+            dto.setPlayer1(board.getPlayers().get(0));
             dto.setPlayer2(board.getPlayers().get(1));
+        }else { 
+            dto.setPlayer1(board.getPlayers().get(0));
         }
         return dto;
     }
@@ -134,8 +146,10 @@ public class BoardController {
     Board convertBoardToEntity(BoardDto dto) { 
         Board board = new Board();
         List<Player> players = new ArrayList<>();
-        players.add(dto.getPlayer1());
-        players.add(dto.getPlayer2());
+        if(dto.getPlayer1()!= null)
+            players.add(dto.getPlayer1());
+        if(dto.getPlayer2()!= null)
+            players.add(dto.getPlayer2());
         board.setPlayers(players);
         board.setBoardId(dto.getBoardId());
         board.setName(dto.getBoardName());
