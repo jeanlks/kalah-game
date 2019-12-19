@@ -35,4 +35,5 @@ public class Board {
     private List<Player> players;
 
     private Boolean gameFinished;
+    
 }

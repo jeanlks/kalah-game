@@ -1,4 +1,4 @@
-package com.test.bol.boltest.service;
+package com.test.bol.boltest.domain;
 
 import com.test.bol.boltest.exceptions.BoardEmptyException;
 import com.test.bol.boltest.exceptions.BoardNotFoundException;
@@ -30,20 +30,15 @@ public class BoardServiceImpl implements BoardService {
 
     BoardRepository repository;
     BoardFactory boardFactory;
+    BoardPositions boardPositions;
 
-    public BoardServiceImpl(BoardRepository repository) {
+    public BoardServiceImpl(BoardRepository repository, BoardPositions boardPositions) {
         this.repository = repository;
         this.boardFactory = new BoardFactory();
+        this.boardPositions = boardPositions;
     }
 
-    public BoardTile player1Positions[] = new BoardTile[] { 
-        BoardTile.P11, BoardTile.P12, BoardTile.P13,
-        BoardTile.P14, BoardTile.P15, BoardTile.P16
-    };
-    public BoardTile player2Positions[] = new BoardTile[] { 
-        BoardTile.P21, BoardTile.P22, BoardTile.P23,
-        BoardTile.P24, BoardTile.P25, BoardTile.P26 
-    };
+
 
     @GetMapping
     public List<Board> getAllBoards() {
@@ -80,7 +75,7 @@ public class BoardServiceImpl implements BoardService {
     private void shouldCapture(Board board, Node lastPosition) {
         if (isPieceOnHisSide(board.getPlayerTurn(), lastPosition)
                 && (lastPosition.getNumber() == 0 || lastPosition.getNumber() == 1)) {
-            BoardTile oppositePosition = getOppositePosition(lastPosition.getPosition());
+            BoardTile oppositePosition = boardPositions.getOppositePosition(lastPosition.getPosition());
             if (board.getBoardMap().get(oppositePosition) != 0) {
                 int sum = board.getBoardMap().get(oppositePosition)
                         + board.getBoardMap().get(lastPosition.getPosition());
@@ -101,36 +96,13 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    private BoardTile getOppositePosition(BoardTile position) {
-        Map<BoardTile, BoardTile> opposites = getAllOppositePositions();
-        return opposites.get(position);
-    }
-
-    private Map<BoardTile, BoardTile> getAllOppositePositions() {
-        Map<BoardTile, BoardTile> opps = new HashMap<>();
-        opps.put(BoardTile.P11, BoardTile.P26);
-        opps.put(BoardTile.P12, BoardTile.P25);
-        opps.put(BoardTile.P13, BoardTile.P24);
-        opps.put(BoardTile.P14, BoardTile.P23);
-        opps.put(BoardTile.P15, BoardTile.P22);
-        opps.put(BoardTile.P16, BoardTile.P21);
-
-        opps.put(BoardTile.P26, BoardTile.P11);
-        opps.put(BoardTile.P25, BoardTile.P12);
-        opps.put(BoardTile.P24, BoardTile.P13);
-        opps.put(BoardTile.P23, BoardTile.P14);
-        opps.put(BoardTile.P22, BoardTile.P15);
-        opps.put(BoardTile.P21, BoardTile.P16);
-        return opps;
-    }
-
     private boolean isPieceOnHisSide(PlayerTurn playerTurn, Node lastPosition) {
         if (playerTurn.equals(PlayerTurn.PLAYER1)) {
-            if (Arrays.stream(player1Positions).anyMatch(lastPosition.getPosition():: equals)) {
+            if (Arrays.stream(boardPositions.getPlayer1Positions()).anyMatch(lastPosition.getPosition():: equals)) {
                 return true;
             }
         } else {
-            if (Arrays.stream(player2Positions).anyMatch(lastPosition.getPosition()::equals)) {
+            if (Arrays.stream(boardPositions.getPlayer2Positions()).anyMatch(lastPosition.getPosition()::equals)) {
                 return true;
             }
         }
@@ -138,8 +110,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private Board checkFinishedGame(Board board) {
-        if (checkPositionsEmpty(player1Positions, board.getBoardMap())
-                || checkPositionsEmpty(player2Positions, board.getBoardMap())) {
+        if (checkPositionsEmpty(boardPositions.getPlayer1Positions(), board.getBoardMap())
+                || checkPositionsEmpty(boardPositions.getPlayer2Positions(), board.getBoardMap())) {
             board.setGameFinished(true);
         }
         return board;
@@ -174,16 +146,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void checkIllegalMove(Move move, Board board) throws IllegalMoveException, BoardEmptyException {
-        if (Arrays.stream(ArrayUtils.addAll(player1Positions, player2Positions))
+        if (Arrays.stream(ArrayUtils.addAll(boardPositions.getPlayer1Positions(), boardPositions.getPlayer2Positions()))
                 .noneMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getBoard().getMap().get(move.getPosition()) == 0) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)
-                && Arrays.stream(player2Positions).anyMatch(move.getPosition()::equals)) {
+                && Arrays.stream(boardPositions.getPlayer2Positions()).anyMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER2)
-                && Arrays.stream(player1Positions).anyMatch(move.getPosition()::equals)) {
+                && Arrays.stream(boardPositions.getPlayer1Positions()).anyMatch(move.getPosition()::equals)) {
             throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
         }
     }

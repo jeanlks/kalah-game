@@ -9,7 +9,7 @@ import com.test.bol.boltest.model.Move;
 import com.test.bol.boltest.model.MoveDto;
 import com.test.bol.boltest.model.Player;
 import com.test.bol.boltest.repository.BoardRepository;
-import com.test.bol.boltest.service.BoardService;
+import com.test.bol.boltest.domain.BoardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -129,23 +130,26 @@ public class BoardController {
         BoardDto dto = modelMapper.map(board, BoardDto.class);
         dto.setBoardName(board.getName());
         dto.setBoard(board.getBoardMap());
-
-        if(board.getPlayers().size() == 2){
-            dto.setPlayer1(board.getPlayers().get(0));
-            dto.setPlayer2(board.getPlayers().get(1));
-        }else { 
-            dto.setPlayer1(board.getPlayers().get(0));
-        }
+        Player player1 =  Optional.of(board.getPlayers())
+                                                  .filter(players -> players.size() == 1)
+                                                  .map(players -> players.get(0))
+                                                  .orElse(null);
+        Player player2 =  Optional.of(board.getPlayers())
+                                                  .filter(players -> players.size() == 2)
+                                                  .map(players -> players.get(1))
+                                                  .orElse(null);
+        dto.setPlayer1(player1);
+        dto.setPlayer2(player2);
         return dto;
     }
 
     Board convertBoardToEntity(BoardDto dto) { 
         Board board = new Board();
         List<Player> players = new ArrayList<>();
-        if(dto.getPlayer1()!= null)
-            players.add(dto.getPlayer1());
-        if(dto.getPlayer2()!= null)
-            players.add(dto.getPlayer2());
+        Optional<Player> player1 = Optional.ofNullable(dto.getPlayer1());
+        player1.ifPresent(player -> players.add(player));
+        Optional<Player> player2 = Optional.ofNullable(dto.getPlayer2());
+        player2.ifPresent(player -> players.add(player));
         board.setPlayers(players);
         board.setBoardId(dto.getBoardId());
         board.setName(dto.getBoardName());

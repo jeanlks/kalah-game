@@ -1,4 +1,4 @@
-package com.test.bol.boltest.service;
+package com.test.bol.boltest.domain;
 
 import com.test.bol.boltest.exceptions.BoardEmptyException;
 import com.test.bol.boltest.exceptions.BoardNotFoundException;

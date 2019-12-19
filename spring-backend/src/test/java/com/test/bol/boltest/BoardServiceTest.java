@@ -7,8 +7,8 @@ import com.test.bol.boltest.model.Board;
 import com.test.bol.boltest.model.Move;
 import com.test.bol.boltest.model.PlayerTurn;
 import com.test.bol.boltest.repository.BoardRepository;
-import com.test.bol.boltest.service.BoardService;
-import com.test.bol.boltest.service.BoardServiceImpl;
+import com.test.bol.boltest.domain.BoardService;
+import com.test.bol.boltest.domain.BoardServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +28,10 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class BoardServiceTest {
 
-    @Mock
-    BoardRepository repository;
-    @InjectMocks
-    BoardService boardService = new BoardServiceImpl(repository);
+    // @Mock
+    // BoardRepository repository;
+    //@InjectMocks
+    //BoardService boardService = new BoardServiceImpl(repository);
 
     @Test
     public void listAllBoards() throws BoardEmptyException{
