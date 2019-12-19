@@ -1,15 +1,14 @@
-package com.test.bol.boltest.controllers;
+package com.test.bol.boltest.api;
 
-import com.test.bol.boltest.exceptions.BoardEmptyException;
-import com.test.bol.boltest.exceptions.BoardNotFoundException;
-import com.test.bol.boltest.exceptions.IllegalMoveException;
-import com.test.bol.boltest.model.Board;
-import com.test.bol.boltest.model.BoardDto;
-import com.test.bol.boltest.model.Move;
-import com.test.bol.boltest.model.MoveDto;
-import com.test.bol.boltest.model.Player;
-import com.test.bol.boltest.repository.BoardRepository;
-import com.test.bol.boltest.domain.BoardService;
+import com.test.bol.boltest.domain.board.BoardEmptyException;
+import com.test.bol.boltest.domain.board.BoardNotFoundException;
+import com.test.bol.boltest.domain.move.IllegalMoveException;
+import com.test.bol.boltest.domain.board.Board;
+import com.test.bol.boltest.domain.board.BoardDto;
+import com.test.bol.boltest.domain.move.Move;
+import com.test.bol.boltest.domain.move.MoveDto;
+import com.test.bol.boltest.domain.player.Player;
+import com.test.bol.boltest.controller.BoardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +56,7 @@ public class BoardController {
 
     /**
      * Should create new board for name
-     * @param boardName board name
+     * @param dto board
      * @return created board
      */
     @PostMapping

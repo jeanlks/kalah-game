@@ -1,4 +1,4 @@
-package com.test.bol.boltest.model;
+package com.test.bol.boltest.domain.board;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,10 +1,11 @@
-package com.test.bol.boltest.domain;
+package com.test.bol.boltest.controller;
 
-import com.test.bol.boltest.exceptions.BoardEmptyException;
-import com.test.bol.boltest.exceptions.BoardNotFoundException;
-import com.test.bol.boltest.exceptions.IllegalMoveException;
-import com.test.bol.boltest.model.*;
-import com.test.bol.boltest.repository.BoardRepository;
+import com.test.bol.boltest.controller.BoardService;
+import com.test.bol.boltest.domain.board.*;
+import com.test.bol.boltest.domain.board.BoardEmptyException;
+import com.test.bol.boltest.domain.move.IllegalMoveException;
+import com.test.bol.boltest.domain.move.*;
+import com.test.bol.boltest.domain.move.PlayerTurn;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
-
-import static com.test.bol.boltest.model.PlayerTurn.PLAYER1;
-import static com.test.bol.boltest.model.PlayerTurn.PLAYER2;
 
 /**
  * Implementation for board service.
@@ -207,7 +205,7 @@ public class BoardServiceImpl implements BoardService {
     public void setNewBoardDefault(Board board) {
         board.setBoard(getDefaultBoard());
         int index_random_player = new Random().nextInt(2);
-        board.setPlayerTurn(Arrays.asList(PLAYER1, PLAYER2).get(index_random_player));
+        board.setPlayerTurn(Arrays.asList(PlayerTurn.PLAYER1, PlayerTurn.PLAYER2).get(index_random_player));
     }
 
     private CircularLinkedList getDefaultBoard() {

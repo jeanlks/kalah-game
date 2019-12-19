@@ -1,28 +1,12 @@
 package com.test.bol.boltest;
 
-import com.test.bol.boltest.exceptions.BoardEmptyException;
-import com.test.bol.boltest.exceptions.BoardNotFoundException;
-import com.test.bol.boltest.exceptions.IllegalMoveException;
-import com.test.bol.boltest.model.Board;
-import com.test.bol.boltest.model.Move;
-import com.test.bol.boltest.model.PlayerTurn;
-import com.test.bol.boltest.repository.BoardRepository;
-import com.test.bol.boltest.domain.BoardService;
-import com.test.bol.boltest.domain.BoardServiceImpl;
-import org.junit.Assert;
+import com.test.bol.boltest.domain.board.BoardEmptyException;
+import com.test.bol.boltest.domain.board.BoardNotFoundException;
+import com.test.bol.boltest.domain.move.IllegalMoveException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

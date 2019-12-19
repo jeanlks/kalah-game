@@ -1,4 +1,4 @@
-package com.test.bol.boltest.model;
+package com.test.bol.boltest.domain.move;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoveDto {
+public class Move {
     private String position;
     private String boardName;
 }

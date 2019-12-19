@@ -1,10 +1,10 @@
-package com.test.bol.boltest.domain;
+package com.test.bol.boltest.controller;
 
-import com.test.bol.boltest.exceptions.BoardEmptyException;
-import com.test.bol.boltest.exceptions.BoardNotFoundException;
-import com.test.bol.boltest.exceptions.IllegalMoveException;
-import com.test.bol.boltest.model.Board;
-import com.test.bol.boltest.model.Move;
+import com.test.bol.boltest.domain.board.BoardEmptyException;
+import com.test.bol.boltest.domain.board.BoardNotFoundException;
+import com.test.bol.boltest.domain.move.IllegalMoveException;
+import com.test.bol.boltest.domain.board.Board;
+import com.test.bol.boltest.domain.move.Move;
 
 import java.util.List;
 

@@ -1,12 +1,12 @@
 package com.test.bol.boltest.domain.rules;
 
-import java.util.Map;
+import com.test.bol.boltest.domain.board.Board;
+import com.test.bol.boltest.domain.board.BoardPositions;
+import com.test.bol.boltest.domain.board.BoardTile;
+import com.test.bol.boltest.domain.move.Move;
+import com.test.bol.boltest.domain.board.Node;
 
-import com.test.bol.boltest.model.Board;
-import com.test.bol.boltest.model.BoardPositions;
-import com.test.bol.boltest.model.BoardTile;
-import com.test.bol.boltest.model.Move;
-import com.test.bol.boltest.model.Node;
+import java.util.Map;
 
 
 public class CheckFinishedGameRule implements Rule {

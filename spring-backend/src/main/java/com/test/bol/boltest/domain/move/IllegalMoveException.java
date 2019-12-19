@@ -1,4 +1,4 @@
-package com.test.bol.boltest.exceptions;
+package com.test.bol.boltest.domain.move;
 
 public class IllegalMoveException extends Exception {
     public IllegalMoveException(String message, Throwable cause) {

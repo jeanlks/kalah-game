@@ -1,10 +1,10 @@
 package com.test.bol.boltest.domain.rules;
 
-import com.test.bol.boltest.model.Board;
-import com.test.bol.boltest.model.BoardTile;
-import com.test.bol.boltest.model.Move;
-import com.test.bol.boltest.model.Node;
-import com.test.bol.boltest.model.PlayerTurn;
+import com.test.bol.boltest.domain.board.Board;
+import com.test.bol.boltest.domain.board.BoardTile;
+import com.test.bol.boltest.domain.move.Move;
+import com.test.bol.boltest.domain.board.Node;
+import com.test.bol.boltest.domain.move.PlayerTurn;
 
 public class ShouldChangePlayerTurn implements Rule {
     Rule next;

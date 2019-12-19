@@ -1,9 +1,12 @@
-package com.test.bol.boltest.model;
+package com.test.bol.boltest.domain.board;
+
+import com.test.bol.boltest.domain.move.PlayerTurn;
+
 import java.util.*;
 
 public class BoardFactory { 
 
-    public Board getBoard() { 
+    public Board getBoard() {
         Board board = new Board();
         int index_random_player = new Random().nextInt(2);
         board.setBoard(this.getCircularBoard());

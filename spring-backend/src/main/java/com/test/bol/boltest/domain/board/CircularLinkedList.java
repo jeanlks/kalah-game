@@ -1,6 +1,4 @@
-package com.test.bol.boltest.model;
-
-import com.test.bol.boltest.exceptions.BoardEmptyException;
+package com.test.bol.boltest.domain.board;
 
 import java.util.HashMap;
 import java.util.Map;

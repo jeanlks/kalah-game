@@ -1,13 +1,17 @@
-package com.test.bol.boltest.model;
+package com.test.bol.boltest.domain.board;
 
+import com.test.bol.boltest.domain.board.BoardTile;
+import com.test.bol.boltest.domain.board.CircularLinkedList;
+import com.test.bol.boltest.domain.move.PlayerTurn;
+import com.test.bol.boltest.domain.player.Player;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
-import com.test.bol.boltest.model.Player;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Board entity.

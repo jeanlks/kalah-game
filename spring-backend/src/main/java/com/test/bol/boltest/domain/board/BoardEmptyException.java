@@ -1,4 +1,4 @@
-package com.test.bol.boltest.exceptions;
+package com.test.bol.boltest.domain.board;
 
 /**
  * Board empty exception for circular linked list

@@ -1,6 +1,6 @@
-package com.test.bol.boltest.repository;
+package com.test.bol.boltest.domain.board;
 
-import com.test.bol.boltest.model.Board;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * @author Jean Carvalho
  */
 @Repository
-public interface BoardRepository extends CrudRepository<Board, Long>{
+public interface BoardRepository extends CrudRepository<Board, Long> {
 
     /**
      * Find if board with name exists
