@@ -57,18 +57,15 @@ public class CircularLinkedList {
         return n.number;
     }
 
-    public Map<BoardTile, Integer> getMap() throws BoardEmptyException {
+    public Map<BoardTile, Integer> getMap() {
         Map<BoardTile, Integer> board = new HashMap<>();
         Node temp = head;
-        if(size<=0){
-            throw new BoardEmptyException("The board was not initialized.");
-        }else{
-            do {
-                board.put(temp.position, temp.number);
-                temp = temp.next;
-            }
-            while(temp!=head);
-        }
+
+        do {
+            board.put(temp.position, temp.number);
+            temp = temp.next;
+        } while(temp!=head);
+        
         return board;
     }
 

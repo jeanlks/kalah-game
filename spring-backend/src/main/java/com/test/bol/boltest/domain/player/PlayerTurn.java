@@ -1,4 +1,4 @@
-package com.test.bol.boltest.domain.move;
+package com.test.bol.boltest.domain.player;
 
 /**
  * Player Turn

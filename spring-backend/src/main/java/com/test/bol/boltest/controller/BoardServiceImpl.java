@@ -5,7 +5,12 @@ import com.test.bol.boltest.domain.board.*;
 import com.test.bol.boltest.domain.board.BoardEmptyException;
 import com.test.bol.boltest.domain.move.IllegalMoveException;
 import com.test.bol.boltest.domain.move.*;
-import com.test.bol.boltest.domain.move.PlayerTurn;
+import com.test.bol.boltest.domain.player.PlayerTurn;
+import com.test.bol.boltest.domain.rules.CheckFinishedGameRule;
+import com.test.bol.boltest.domain.rules.IllegalMoveRule;
+import com.test.bol.boltest.domain.rules.ShouldCaptureRule;
+import com.test.bol.boltest.domain.rules.ShouldChangePlayerTurnRule;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -29,11 +34,21 @@ public class BoardServiceImpl implements BoardService {
     BoardRepository repository;
     BoardFactory boardFactory;
     BoardPositions boardPositions;
+    CheckFinishedGameRule checkFinishedGameRule;
+    ShouldCaptureRule shouldCaptureRule;
+    ShouldChangePlayerTurnRule shouldChangePlayerTurnRule; 
+    IllegalMoveRule illegalMoveRule;
 
-    public BoardServiceImpl(BoardRepository repository, BoardPositions boardPositions) {
+    public BoardServiceImpl(BoardRepository repository, BoardPositions boardPositions,
+                            CheckFinishedGameRule checkFinishedGameRule, ShouldCaptureRule shouldCaptureRule,
+                            ShouldChangePlayerTurnRule shouldChangePlayerTurnRule, IllegalMoveRule illegalMoveRule) {
         this.repository = repository;
         this.boardFactory = new BoardFactory();
         this.boardPositions = boardPositions;
+        this.checkFinishedGameRule = checkFinishedGameRule;
+        this.shouldCaptureRule = shouldCaptureRule;
+        this.shouldChangePlayerTurnRule = shouldChangePlayerTurnRule;
+        this.illegalMoveRule = illegalMoveRule;
     }
 
 
@@ -56,72 +71,18 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Board makeMove(Move move) throws BoardNotFoundException, IllegalMoveException, BoardEmptyException {
+        shouldCaptureRule.setNext(this.shouldChangePlayerTurnRule);
+        this.shouldChangePlayerTurnRule.setNext(this.checkFinishedGameRule);
         Board board = findBoard(move.getBoardName());
         board.setBoard(getCircularLinkedListFromMap(board.getBoardMap()));
-        checkIllegalMove(move, board);
+        this.illegalMoveRule.process(move, board, null);
         CircularLinkedList boardTable = board.getBoard();
-        Node lastPosition = moveBoard(boardTable, move.getPosition(), board.getPlayerTurn());
+        Node lastPosition = moveBoard(boardTable, BoardTile.valueOf(move.getPosition()), board.getPlayerTurn());
         board.setBoard(boardTable);
         board.setBoardMap(board.getBoard().getMap());
-        shouldCapture(board, lastPosition);
-        checkLastPositionAndChangePlayer(lastPosition, board);
-        checkFinishedGame(board);
+        shouldCaptureRule.process(move, board, lastPosition);
         repository.save(board);
         return board;
-    }
-
-    private void shouldCapture(Board board, Node lastPosition) {
-        if (isPieceOnHisSide(board.getPlayerTurn(), lastPosition)
-                && (lastPosition.getNumber() == 0 || lastPosition.getNumber() == 1)) {
-            BoardTile oppositePosition = boardPositions.getOppositePosition(lastPosition.getPosition());
-            if (board.getBoardMap().get(oppositePosition) != 0) {
-                int sum = board.getBoardMap().get(oppositePosition)
-                        + board.getBoardMap().get(lastPosition.getPosition());
-                board.getBoardMap().replace(oppositePosition, 0);
-                board.getBoardMap().replace(lastPosition.getPosition(), 0);
-                updatePlayerBigPit(sum, board);
-            }
-        }
-    }
-
-    private void updatePlayerBigPit(int sum, Board board) {
-        if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)) {
-            board.getBoardMap()
-                 .replace(BoardTile.P1_BIG_PIT, board.getBoardMap().get(BoardTile.P1_BIG_PIT) + sum);
-        } else {
-            board.getBoardMap()
-                 .replace(BoardTile.P2_BIG_PIT, board.getBoardMap().get(BoardTile.P2_BIG_PIT) + sum);
-        }
-    }
-
-    private boolean isPieceOnHisSide(PlayerTurn playerTurn, Node lastPosition) {
-        if (playerTurn.equals(PlayerTurn.PLAYER1)) {
-            if (Arrays.stream(boardPositions.getPlayer1Positions()).anyMatch(lastPosition.getPosition():: equals)) {
-                return true;
-            }
-        } else {
-            if (Arrays.stream(boardPositions.getPlayer2Positions()).anyMatch(lastPosition.getPosition()::equals)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Board checkFinishedGame(Board board) {
-        if (checkPositionsEmpty(boardPositions.getPlayer1Positions(), board.getBoardMap())
-                || checkPositionsEmpty(boardPositions.getPlayer2Positions(), board.getBoardMap())) {
-            board.setGameFinished(true);
-        }
-        return board;
-    }
-
-    private boolean checkPositionsEmpty(BoardTile[] playerPositions, Map<BoardTile, Integer> boardMap) {
-        for (BoardTile playerPosition : playerPositions) {
-            if (boardMap.get(playerPosition) != 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private CircularLinkedList getCircularLinkedListFromMap(Map<BoardTile, Integer> map) {
@@ -143,39 +104,9 @@ public class BoardServiceImpl implements BoardService {
         return board;
     }
 
-    private void checkIllegalMove(Move move, Board board) throws IllegalMoveException, BoardEmptyException {
-        if (Arrays.stream(ArrayUtils.addAll(boardPositions.getPlayer1Positions(), boardPositions.getPlayer2Positions()))
-                .noneMatch(move.getPosition()::equals)) {
-            throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
-        } else if (board.getBoard().getMap().get(move.getPosition()) == 0) {
-            throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
-        } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)
-                && Arrays.stream(boardPositions.getPlayer2Positions()).anyMatch(move.getPosition()::equals)) {
-            throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
-        } else if (board.getPlayerTurn().equals(PlayerTurn.PLAYER2)
-                && Arrays.stream(boardPositions.getPlayer1Positions()).anyMatch(move.getPosition()::equals)) {
-            throw new IllegalMoveException(ILLEGAL_MOVE_MESSAGE);
-        }
-    }
-
     @Override
     public void clearBoards() {
         repository.deleteAll();
-    }
-
-    private void checkLastPositionAndChangePlayer(Node lastPosition, Board board) {
-        if (!(lastPosition.getPosition() == BoardTile.P1_BIG_PIT)
-                && !(lastPosition.getPosition() == BoardTile.P2_BIG_PIT)) {
-            changePlayerTurn(board);
-        }
-    }
-
-    private void changePlayerTurn(Board board) {
-        if (board.getPlayerTurn().equals(PlayerTurn.PLAYER1)) {
-            board.setPlayerTurn(PlayerTurn.PLAYER2);
-        } else {
-            board.setPlayerTurn(PlayerTurn.PLAYER1);
-        }
     }
 
     @Override
@@ -227,7 +158,7 @@ public class BoardServiceImpl implements BoardService {
         return board;
     }
 
-    private Node moveBoard(CircularLinkedList boardTable, String position, PlayerTurn playerTurn) {
+    private Node moveBoard(CircularLinkedList boardTable, BoardTile position, PlayerTurn playerTurn) {
         Node temp = boardTable.head;
         do {
             temp = temp.next;

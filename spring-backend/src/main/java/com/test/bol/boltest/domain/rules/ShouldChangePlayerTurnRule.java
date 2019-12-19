@@ -2,15 +2,19 @@ package com.test.bol.boltest.domain.rules;
 
 import com.test.bol.boltest.domain.board.Board;
 import com.test.bol.boltest.domain.board.BoardTile;
+import com.test.bol.boltest.domain.move.IllegalMoveException;
 import com.test.bol.boltest.domain.move.Move;
 import com.test.bol.boltest.domain.board.Node;
-import com.test.bol.boltest.domain.move.PlayerTurn;
+import com.test.bol.boltest.domain.player.PlayerTurn;
 
-public class ShouldChangePlayerTurn implements Rule {
+import org.springframework.stereotype.Component;
+
+@Component
+public class ShouldChangePlayerTurnRule implements Rule {
     Rule next;
 
     @Override
-    public void process(Move move, Board board, Node lastPosition) {
+    public void process(Move move, Board board, Node lastPosition) throws IllegalMoveException {
         if (!(lastPosition.getPosition() == BoardTile.P1_BIG_PIT)
                 && !(lastPosition.getPosition() == BoardTile.P2_BIG_PIT)) {
             changePlayerTurn(board);

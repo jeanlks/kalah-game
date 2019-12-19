@@ -2,7 +2,7 @@ package com.test.bol.boltest.domain.board;
 
 import com.test.bol.boltest.domain.board.BoardTile;
 import com.test.bol.boltest.domain.board.CircularLinkedList;
-import com.test.bol.boltest.domain.move.PlayerTurn;
+import com.test.bol.boltest.domain.player.PlayerTurn;
 import com.test.bol.boltest.domain.player.Player;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
