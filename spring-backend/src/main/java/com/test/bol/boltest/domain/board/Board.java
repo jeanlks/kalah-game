@@ -35,7 +35,7 @@ public class Board {
     private Map<BoardTile, Integer> boardMap;
     private PlayerTurn playerTurn;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Player> players;
 
     private Boolean gameFinished;
