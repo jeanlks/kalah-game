@@ -54,11 +54,4 @@ public interface BoardService {
      * Delete all boards
      */
     void clearBoards();
-
-    /**
-     * Get a default board for starting the game
-     * @param boardName board name
-     * @return new default board
-     */
-    void setNewBoardDefault(Board board);
 }

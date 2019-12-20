@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.*;
 
 /**
@@ -130,32 +128,6 @@ public class BoardServiceImpl implements BoardService {
         Board boardFromRepository = repository.findFirstByBoardId(board.getBoardId());
         boardFromRepository.getPlayers().add(board.getPlayers().get(0));
         return repository.save(boardFromRepository);
-    }
-
-    @Override
-    public void setNewBoardDefault(Board board) {
-        board.setBoard(getDefaultBoard());
-        int index_random_player = new Random().nextInt(2);
-        board.setPlayerTurn(Arrays.asList(PlayerTurn.PLAYER1, PlayerTurn.PLAYER2).get(index_random_player));
-    }
-
-    private CircularLinkedList getDefaultBoard() {
-        CircularLinkedList board = new CircularLinkedList();
-        board.addNodeAtEnd(6, BoardTile.P11);
-        board.addNodeAtEnd(6, BoardTile.P12);
-        board.addNodeAtEnd(6, BoardTile.P13);
-        board.addNodeAtEnd(6, BoardTile.P14);
-        board.addNodeAtEnd(6, BoardTile.P15);
-        board.addNodeAtEnd(6, BoardTile.P16);
-        board.addNodeAtEnd(0, BoardTile.P1_BIG_PIT);
-        board.addNodeAtEnd(6, BoardTile.P21);
-        board.addNodeAtEnd(6, BoardTile.P22);
-        board.addNodeAtEnd(6, BoardTile.P23);
-        board.addNodeAtEnd(6, BoardTile.P24);
-        board.addNodeAtEnd(6, BoardTile.P25);
-        board.addNodeAtEnd(6, BoardTile.P26);
-        board.addNodeAtEnd(0, BoardTile.P2_BIG_PIT);
-        return board;
     }
 
     private Node moveBoard(CircularLinkedList boardTable, BoardTile position, PlayerTurn playerTurn) {
