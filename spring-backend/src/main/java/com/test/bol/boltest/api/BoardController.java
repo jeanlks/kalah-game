@@ -130,7 +130,7 @@ public class BoardController {
         dto.setBoardName(board.getName());
         dto.setBoard(board.getBoardMap());
         Player player1 =  Optional.of(board.getPlayers())
-                                                  .filter(players -> players.size() == 1)
+                                                  .filter(players -> players.size() == 1 || players.size() == 2)
                                                   .map(players -> players.get(0))
                                                   .orElse(null);
         Player player2 =  Optional.of(board.getPlayers())

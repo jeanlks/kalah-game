@@ -2,9 +2,9 @@ package com.test.bol.boltest.controller;
 
 import com.test.bol.boltest.controller.BoardService;
 import com.test.bol.boltest.domain.board.*;
-import com.test.bol.boltest.domain.board.BoardEmptyException;
 import com.test.bol.boltest.domain.move.IllegalMoveException;
 import com.test.bol.boltest.domain.move.*;
+import com.test.bol.boltest.domain.player.Player;
 import com.test.bol.boltest.domain.player.PlayerTurn;
 import com.test.bol.boltest.domain.rules.CheckFinishedGameRule;
 import com.test.bol.boltest.domain.rules.IllegalMoveRule;
@@ -124,10 +124,31 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board joinBoard(Board board) {
+    public Board joinBoard(Board board) throws JoinBoardException {
         Board boardFromRepository = repository.findFirstByBoardId(board.getBoardId());
-        boardFromRepository.getPlayers().add(board.getPlayers().get(0));
-        return repository.save(boardFromRepository);
+        List<Player> players = boardFromRepository.getPlayers();
+        if(players.size() == 2 && isPlayerInGame(players, board.getPlayers().get(0).getPlayerId())){
+            return boardFromRepository;
+        } else {
+            checkForFullBoard(boardFromRepository, board);
+            boardFromRepository.getPlayers().add(board.getPlayers().get(0));
+            return repository.save(boardFromRepository);
+        }
+    }
+
+    private void checkForFullBoard(Board repositoryBoard, Board board ) throws JoinBoardException { 
+        Optional.of(repositoryBoard.getPlayers())
+                .filter(players -> players.size() == 2)
+                .ifPresent(s -> {
+            throw new JoinBoardException("Board already full!");
+        });
+    }
+
+    private Boolean isPlayerInGame(List<Player> players, String playerId) {
+       if(players.get(0).getPlayerId().equals(playerId) || players.get(1).getPlayerId().equals(playerId)) { 
+            return true;
+       }
+       return false;
     }
 
     private Node moveBoard(CircularLinkedList boardTable, BoardTile position, PlayerTurn playerTurn) {

@@ -2,6 +2,7 @@ package com.test.bol.boltest.controller;
 
 import com.test.bol.boltest.domain.board.BoardEmptyException;
 import com.test.bol.boltest.domain.board.BoardNotFoundException;
+import com.test.bol.boltest.domain.board.JoinBoardException;
 import com.test.bol.boltest.domain.move.IllegalMoveException;
 import com.test.bol.boltest.domain.board.Board;
 import com.test.bol.boltest.domain.move.Move;
@@ -40,7 +41,7 @@ public interface BoardService {
      * @param board board
      * @return board
      */
-    Board joinBoard(Board board);
+    Board joinBoard(Board board) throws JoinBoardException;
 
     /**
      * Make a move inside the board game.

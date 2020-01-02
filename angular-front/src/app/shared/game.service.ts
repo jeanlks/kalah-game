@@ -37,20 +37,20 @@ export class GameService {
 
    getTiles(): Tile[] {
      return [
-      { text: '0', cols: 1, rows: 2, color: 'lightgreen', name: 'bigPit2' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p26' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p25' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p24' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p23' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p22' },
-      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'p21' },
-      { text: '0', cols: 1, rows: 2, color: 'lightblue', name: 'bigPit1' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p11' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p12' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p13' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p14' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p15' },
-      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'p16' },
+      { text: '0', cols: 1, rows: 2, color: 'lightgreen', name: 'P2_BIG_PIT' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P26' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P25' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P24' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P23' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P22' },
+      { text: '6', cols: 1, rows: 1, color: 'lightgreen', name: 'P21' },
+      { text: '0', cols: 1, rows: 2, color: 'lightblue', name: 'P1_BIG_PIT' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P11' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P12' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P13' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P14' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P15' },
+      { text: '6', cols: 1, rows: 1, color: 'lightblue', name: 'P16' },
     ];
    }
 
